@@ -51,6 +51,8 @@ Route::middleware(['auth', 'verified'])->prefix('appointments')->name('appointme
     Route::get('/{appointment}/edit', [AppointmentController::class, 'edit'])->name('edit');
     Route::put('/{appointment}', [AppointmentController::class, 'update'])->name('update');
     Route::delete('/{appointment}', [AppointmentController::class, 'destroy'])->name('destroy');
+    Route::post('/{appointment}/confirm', [AppointmentController::class, 'confirm'])->name('confirm');
+    Route::post('/{appointment}/complete', [AppointmentController::class, 'complete'])->name('complete');
 });
 
 // Profile Routes
