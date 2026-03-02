@@ -18,14 +18,16 @@ class DoctorController extends Controller
     {
         $query = Doctor::with(['user', 'department']);
         
-        // Search
+        // Search - Fixed with proper grouping
         if ($request->has('search')) {
             $search = $request->search;
-            $query->whereHas('user', function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
-            })
-            ->orWhere('specialization', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', function($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%");
+                })
+                ->orWhere('specialization', 'like', "%{$search}%");
+            });
         }
         
         // Filter by status

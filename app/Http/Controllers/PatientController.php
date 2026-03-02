@@ -18,15 +18,17 @@ class PatientController extends Controller
     {
         $query = Patient::with('user');
         
-        // Search
+        // Search - Fixed with proper grouping
         if ($request->has('search')) {
             $search = $request->search;
-            $query->whereHas('user', function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
-            })
-            ->orWhere('patient_code', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('user', function($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%")
+                          ->orWhere('phone', 'like', "%{$search}%");
+                })
+                ->orWhere('patient_code', 'like', "%{$search}%");
+            });
         }
         
         // Filter by status
@@ -198,6 +200,7 @@ class PatientController extends Controller
      */
     public function destroy(Patient $patient)
     {
+        // Use soft delete for user
         $patient->user->delete(); // This will cascade delete the patient
         
         return redirect()->route('patients.index')
