@@ -13,15 +13,15 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'role:admin'])->name('dashboard');
 
 // Admin Routes
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 // Patient Routes
-Route::middleware(['auth', 'verified'])->prefix('patients')->name('patients.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('patients')->name('patients.')->group(function () {
     Route::get('/', [PatientController::class, 'index'])->name('index');
     Route::get('/create', [PatientController::class, 'create'])->name('create');
     Route::post('/', [PatientController::class, 'store'])->name('store');
@@ -32,7 +32,7 @@ Route::middleware(['auth', 'verified'])->prefix('patients')->name('patients.')->
 });
 
 // Doctor Routes
-Route::middleware(['auth', 'verified'])->prefix('doctors')->name('doctors.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('doctors')->name('doctors.')->group(function () {
     Route::get('/', [DoctorController::class, 'index'])->name('index');
     Route::get('/create', [DoctorController::class, 'create'])->name('create');
     Route::post('/', [DoctorController::class, 'store'])->name('store');
@@ -43,7 +43,7 @@ Route::middleware(['auth', 'verified'])->prefix('doctors')->name('doctors.')->gr
 });
 
 // Appointment Routes
-Route::middleware(['auth', 'verified'])->prefix('appointments')->name('appointments.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('appointments')->name('appointments.')->group(function () {
     Route::get('/', [AppointmentController::class, 'index'])->name('index');
     Route::get('/create', [AppointmentController::class, 'create'])->name('create');
     Route::post('/', [AppointmentController::class, 'store'])->name('store');
